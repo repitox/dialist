@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+
+# GitHub Actions
+.github
+
+# Node modules (если появятся)
+node_modules
+npm-debug.log*
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker/start.sh
+docker/stop.sh
+docker/logs.sh
+docker/logs/
+
+# Документация разработки
+DEPLOYMENT.md
+QUICK_DEPLOY_SETUP.md
+NETANGELS_SETUP.md
+
+# Логи
+*.log
+logs/
+
+# Временные файлы
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*~

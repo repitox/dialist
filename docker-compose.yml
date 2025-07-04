@@ -1,0 +1,40 @@
+services:
+  dialist-web:
+    build: .
+    container_name: dialist-dev
+    ports:
+      - "3000:80"  # Локальный порт 3000 -> контейнер порт 80
+    volumes:
+      # Монтируем файлы для live reload
+      - ./index.html:/usr/share/nginx/html/index.html
+      - ./styles.css:/usr/share/nginx/html/styles.css
+      - ./script.js:/usr/share/nginx/html/script.js
+      - ./README.md:/usr/share/nginx/html/README.md
+      # Монтируем папки если есть
+      - ./images:/usr/share/nginx/html/images:ro
+      - ./assets:/usr/share/nginx/html/assets:ro
+      # Логи для отладки
+      - ./docker/logs:/var/log/nginx
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    restart: unless-stopped
+    networks:
+      - dialist-network
+
+  # Дополнительный контейнер для инструментов разработки
+  dialist-tools:
+    image: node:18-alpine
+    container_name: dialist-tools
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: tail -f /dev/null  # Держим контейнер запущенным
+    networks:
+      - dialist-network
+    profiles:
+      - tools  # Запускается только при необходимости
+
+networks:
+  dialist-network:
+    driver: bridge
