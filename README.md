@@ -42,7 +42,7 @@ npm start
 Проект настроен для автоматического деплоя на сервер через GitHub Actions.
 
 ### Статус сборки:
-![Deploy Status](https://github.com/repitox/dialist/actions/workflows/deploy.yml/badge.svg)
+![Deploy Status](https://github.com/repitox/dialist/actions/workflows/deploy-static.yml/badge.svg)
 ![Test Status](https://github.com/repitox/dialist/actions/workflows/test.yml/badge.svg)
 
 ### Как это работает:

@@ -22,11 +22,15 @@ jobs:
       with:
         node-version: '18'
     
-    # Устанавливаем зависимости (если есть package.json)
+    # Устанавливаем зависимости (если есть package.json и package-lock.json)
     - name: Install dependencies
       run: |
-        if [ -f package.json ]; then
+        if [ -f package.json ] && [ -f package-lock.json ]; then
+          echo "Installing dependencies with npm ci..."
           npm ci
+        elif [ -f package.json ]; then
+          echo "Installing dependencies with npm install..."
+          npm install
         else
           echo "No package.json found, skipping npm install"
         fi
@@ -34,10 +38,15 @@ jobs:
     # Сборка проекта (если нужна)
     - name: Build project
       run: |
-        if [ -f package.json ] && npm run build --if-present; then
-          echo "Build completed"
+        if [ -f package.json ]; then
+          # Проверяем, есть ли скрипт build
+          if npm run build --if-present 2>/dev/null; then
+            echo "✅ Build completed successfully"
+          else
+            echo "ℹ️ No build script found, using source files"
+          fi
         else
-          echo "No build script found or no package.json, using source files"
+          echo "ℹ️ No package.json found, using source files as-is"
         fi
     
     # Подготавливаем файлы для деплоя

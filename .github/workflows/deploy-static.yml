@@ -1,0 +1,183 @@
+name: Deploy Static Site
+
+# Запуск при пуше в main ветку
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Получаем код из репозитория
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # Проверяем файлы проекта
+    - name: Validate project files
+      run: |
+        echo "🔍 Checking project files..."
+        
+        # Проверяем наличие основных файлов
+        if [ ! -f "index.html" ]; then
+          echo "❌ index.html not found!"
+          exit 1
+        fi
+        
+        echo "✅ index.html found"
+        
+        if [ -f "styles.css" ]; then
+          echo "✅ styles.css found"
+        fi
+        
+        if [ -f "script.js" ]; then
+          echo "✅ script.js found"
+        fi
+        
+        echo "📋 Files to deploy:"
+        ls -la *.html *.css *.js *.md 2>/dev/null || echo "Some files may be missing"
+    
+    # Подготавливаем файлы для деплоя
+    - name: Prepare deployment files
+      run: |
+        echo "📦 Preparing files for deployment..."
+        
+        # Создаем папку для деплоя
+        mkdir -p deploy
+        
+        # Копируем основные файлы
+        cp index.html deploy/ 2>/dev/null || echo "⚠️ index.html not found"
+        cp styles.css deploy/ 2>/dev/null || echo "⚠️ styles.css not found"
+        cp script.js deploy/ 2>/dev/null || echo "⚠️ script.js not found"
+        
+        # Копируем дополнительные файлы если есть
+        cp *.png deploy/ 2>/dev/null || echo "ℹ️ No PNG images found"
+        cp *.jpg deploy/ 2>/dev/null || echo "ℹ️ No JPG images found"
+        cp *.jpeg deploy/ 2>/dev/null || echo "ℹ️ No JPEG images found"
+        cp *.gif deploy/ 2>/dev/null || echo "ℹ️ No GIF images found"
+        cp *.svg deploy/ 2>/dev/null || echo "ℹ️ No SVG images found"
+        cp *.ico deploy/ 2>/dev/null || echo "ℹ️ No ICO files found"
+        
+        # Копируем папки если есть
+        if [ -d "images" ]; then
+          cp -r images deploy/
+          echo "✅ Images folder copied"
+        fi
+        
+        if [ -d "assets" ]; then
+          cp -r assets deploy/
+          echo "✅ Assets folder copied"
+        fi
+        
+        if [ -d "css" ]; then
+          cp -r css deploy/
+          echo "✅ CSS folder copied"
+        fi
+        
+        if [ -d "js" ]; then
+          cp -r js deploy/
+          echo "✅ JS folder copied"
+        fi
+        
+        echo "📋 Files prepared for deployment:"
+        ls -la deploy/
+        
+        # Проверяем размер
+        total_size=$(du -sh deploy/ | cut -f1)
+        echo "📊 Total deployment size: $total_size"
+    
+    # Деплой на сервер через SSH
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          echo "🚀 Starting deployment process..."
+          
+          # Переходим в папку сайта
+          cd ${{ secrets.SERVER_PATH }}
+          
+          # Создаем бэкап текущей версии
+          if [ -d "current" ]; then
+            echo "📦 Creating backup..."
+            rm -rf backup
+            mv current backup
+            echo "✅ Backup created"
+          fi
+          
+          # Создаем папку для новой версии
+          mkdir -p current
+          echo "📁 Deployment directory prepared"
+    
+    # Копируем файлы на сервер
+    - name: Copy files to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        source: "deploy/*"
+        target: ${{ secrets.SERVER_PATH }}/current/
+        strip_components: 1
+    
+    # Финальные настройки на сервере
+    - name: Finalize deployment
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          cd ${{ secrets.SERVER_PATH }}/current
+          
+          echo "🔧 Setting up file permissions..."
+          
+          # Устанавливаем правильные права доступа
+          chmod -R 644 *
+          find . -type d -exec chmod 755 {} \;
+          
+          # Специальные права для HTML файлов
+          chmod 644 *.html 2>/dev/null || echo "No HTML files to set permissions"
+          
+          echo "✅ File permissions set"
+          
+          # Показываем список файлов
+          echo "📋 Deployed files:"
+          ls -la
+          
+          # Проверяем основные файлы
+          if [ -f "index.html" ]; then
+            echo "✅ index.html deployed successfully"
+          else
+            echo "❌ index.html not found after deployment!"
+          fi
+          
+          echo "🎉 Deployment completed successfully!"
+          echo "📁 Files deployed to: ${{ secrets.SERVER_PATH }}/current"
+          echo "🌐 Site should be available at your domain"
+    
+    # Уведомление об успешном деплое
+    - name: Deployment notification
+      if: success()
+      run: |
+        echo "🎉 Static site deployment successful!"
+        echo "✅ Dialist has been deployed to the server"
+        echo "🔗 Check your website to see the changes"
+        echo "📊 Deployment completed at $(date)"
+    
+    # Уведомление об ошибке
+    - name: Deployment failed notification
+      if: failure()
+      run: |
+        echo "❌ Static site deployment failed!"
+        echo "🔍 Check the logs above for details"
+        echo "💡 Common issues:"
+        echo "   - Check SSH connection settings"
+        echo "   - Verify server path exists"
+        echo "   - Ensure proper file permissions"
