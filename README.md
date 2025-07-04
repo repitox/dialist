@@ -17,7 +17,7 @@ Dialist - это веб-приложение для управления пов�
 
 ```bash
 # Клонирование репозитория
-git clone https://github.com/ваш-username/dialist.git
+git clone https://github.com/repitox/dialist.git
 cd dialist
 
 # Установка зависимостей
