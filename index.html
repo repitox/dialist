@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialist - Ежедневник</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗓️ Dialist</h1>
+            <p class="subtitle">Ваш персональный ежедневник</p>
+        </header>
+        
+        <main>
+            <div class="welcome-card">
+                <h2>Hello World!</h2>
+                <p>Добро пожаловать в Dialist - ваш новый помощник для планирования дел и задач.</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <span class="icon">📝</span>
+                        <h3>Списки дел</h3>
+                        <p>Создавайте и управляйте своими задачами</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <span class="icon">📅</span>
+                        <h3>Планирование</h3>
+                        <p>Планируйте свой день и неделю</p>
+                    </div>
+                    
+                    <div class="feature">
+                        <span class="icon">⚡</span>
+                        <h3>Активности</h3>
+                        <p>Отслеживайте свои активности</p>
+                    </div>
+                </div>
+                
+                <button class="start-button" onclick="showMessage()">
+                    Начать работу
+                </button>
+                
+                <div id="message" class="message hidden">
+                    <p>🎉 Скоро здесь будет полнофункциональный ежедневник!</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 Dialist. Сделано с ❤️</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
