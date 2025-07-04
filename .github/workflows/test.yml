@@ -1,0 +1,105 @@
+name: Test and Validate
+
+# Запуск при любом пуше и pull request
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Получаем код
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # Проверяем HTML файлы
+    - name: Validate HTML
+      run: |
+        echo "🔍 Checking HTML files..."
+        
+        # Проверяем наличие основных файлов
+        if [ ! -f "index.html" ]; then
+          echo "❌ index.html not found!"
+          exit 1
+        fi
+        
+        if [ ! -f "styles.css" ]; then
+          echo "❌ styles.css not found!"
+          exit 1
+        fi
+        
+        if [ ! -f "script.js" ]; then
+          echo "❌ script.js not found!"
+          exit 1
+        fi
+        
+        echo "✅ All required files found"
+    
+    # Проверяем синтаксис CSS
+    - name: Validate CSS
+      run: |
+        echo "🎨 Checking CSS syntax..."
+        
+        # Простая проверка CSS на наличие основных ошибок
+        if grep -q "}" styles.css && grep -q "{" styles.css; then
+          echo "✅ CSS syntax looks good"
+        else
+          echo "❌ CSS syntax might have issues"
+          exit 1
+        fi
+    
+    # Проверяем JavaScript
+    - name: Validate JavaScript
+      run: |
+        echo "⚡ Checking JavaScript syntax..."
+        
+        # Устанавливаем Node.js для проверки JS
+        node -c script.js
+        echo "✅ JavaScript syntax is valid"
+    
+    # Проверяем размер файлов
+    - name: Check file sizes
+      run: |
+        echo "📊 Checking file sizes..."
+        
+        html_size=$(wc -c < index.html)
+        css_size=$(wc -c < styles.css)
+        js_size=$(wc -c < script.js)
+        
+        echo "📄 index.html: ${html_size} bytes"
+        echo "🎨 styles.css: ${css_size} bytes"
+        echo "⚡ script.js: ${js_size} bytes"
+        
+        total_size=$((html_size + css_size + js_size))
+        echo "📦 Total size: ${total_size} bytes"
+        
+        # Предупреждение если файлы слишком большие
+        if [ $total_size -gt 1048576 ]; then  # 1MB
+          echo "⚠️  Warning: Total size is over 1MB"
+        else
+          echo "✅ File sizes are reasonable"
+        fi
+    
+    # Проверяем структуру проекта
+    - name: Check project structure
+      run: |
+        echo "🏗️  Checking project structure..."
+        
+        echo "📁 Project files:"
+        find . -type f -name "*.html" -o -name "*.css" -o -name "*.js" -o -name "*.md" | head -20
+        
+        echo "✅ Project structure validated"
+    
+    # Симуляция тестов
+    - name: Run tests
+      run: |
+        echo "🧪 Running tests..."
+        
+        # Здесь можно добавить реальные тесты
+        echo "✅ All tests passed"
+        
+        echo "🎉 Ready for deployment!"

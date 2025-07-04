@@ -1,0 +1,144 @@
+name: Deploy to Server
+
+# Запуск при пуше в main ветку
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Получаем код из репозитория
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    # Устанавливаем Node.js (если понадобится для сборки)
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    # Устанавливаем зависимости (если есть package.json)
+    - name: Install dependencies
+      run: |
+        if [ -f package.json ]; then
+          npm ci
+        else
+          echo "No package.json found, skipping npm install"
+        fi
+    
+    # Сборка проекта (если нужна)
+    - name: Build project
+      run: |
+        if [ -f package.json ] && npm run build --if-present; then
+          echo "Build completed"
+        else
+          echo "No build script found or no package.json, using source files"
+        fi
+    
+    # Подготавливаем файлы для деплоя
+    - name: Prepare deployment files
+      run: |
+        # Создаем папку для деплоя
+        mkdir -p deploy
+        
+        # Копируем нужные файлы
+        cp index.html deploy/
+        cp styles.css deploy/
+        cp script.js deploy/
+        cp README.md deploy/
+        
+        # Если есть папка build, копируем её содержимое
+        if [ -d "build" ]; then
+          cp -r build/* deploy/
+        fi
+        
+        # Если есть папка dist, копируем её содержимое  
+        if [ -d "dist" ]; then
+          cp -r dist/* deploy/
+        fi
+        
+        echo "Files prepared for deployment:"
+        ls -la deploy/
+    
+    # Деплой на сервер через SSH
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          # Переходим в папку сайта
+          cd ${{ secrets.SERVER_PATH }}
+          
+          # Создаем бэкап текущей версии
+          if [ -d "current" ]; then
+            rm -rf backup
+            mv current backup
+            echo "Backup created"
+          fi
+          
+          # Создаем папку для новой версии
+          mkdir -p current
+          
+          echo "Deployment directory prepared"
+    
+    # Копируем файлы на сервер
+    - name: Copy files to server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        source: "deploy/*"
+        target: ${{ secrets.SERVER_PATH }}/current/
+        strip_components: 1
+    
+    # Финальные настройки на сервере
+    - name: Finalize deployment
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          cd ${{ secrets.SERVER_PATH }}/current
+          
+          # Устанавливаем правильные права доступа
+          chmod -R 644 *
+          find . -type d -exec chmod 755 {} \;
+          
+          # Перезапускаем веб-сервер (если нужно)
+          # sudo systemctl reload nginx
+          # sudo systemctl reload apache2
+          
+          echo "✅ Deployment completed successfully!"
+          echo "📁 Files deployed to: ${{ secrets.SERVER_PATH }}/current"
+          echo "🌐 Site should be available at your domain"
+          
+          # Показываем список файлов
+          echo "📋 Deployed files:"
+          ls -la
+    
+    # Уведомление об успешном деплое
+    - name: Deployment notification
+      if: success()
+      run: |
+        echo "🎉 Deployment successful!"
+        echo "✅ Dialist has been deployed to the server"
+        echo "🔗 Check your website to see the changes"
+    
+    # Уведомление об ошибке
+    - name: Deployment failed notification
+      if: failure()
+      run: |
+        echo "❌ Deployment failed!"
+        echo "🔍 Check the logs above for details"

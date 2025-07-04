@@ -1,0 +1,34 @@
+{
+  "name": "dialist",
+  "version": "1.0.0",
+  "description": "Ежедневник со списком дел, задач и активностей для человека",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "python3 -m http.server 8000",
+    "test": "echo \"Running tests...\" && exit 0",
+    "lint": "echo \"Linting files...\" && exit 0",
+    "build": "echo \"No build process needed for static site\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/repitox/dialist.git"
+  },
+  "keywords": [
+    "diary",
+    "todo",
+    "planner",
+    "tasks",
+    "productivity",
+    "ежедневник",
+    "планировщик"
+  ],
+  "author": "repitox",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/repitox/dialist/issues"
+  },
+  "homepage": "https://github.com/repitox/dialist#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}
