@@ -1,122 +1,402 @@
 .App {
-  text-align: center;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #9b59b6 100%);
+  background-attachment: fixed;
+  position: relative;
+  overflow-x: hidden;
 }
 
-.App-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 20px;
+.App::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: float 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Шапка */
+.header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  flex: 1;
+  padding: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
 .logo-section {
-  margin-bottom: 40px;
+  text-align: left;
 }
 
-.logo-section h1 {
-  font-size: 3rem;
-  margin-bottom: 10px;
+.logo {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-.logo-section p {
-  font-size: 1.2rem;
+.tagline {
+  font-size: 1rem;
+  margin: 5px 0 0 0;
   opacity: 0.9;
+  font-style: italic;
 }
 
-.auth-section {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 30px;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  margin-bottom: 30px;
-  max-width: 400px;
+.auth-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Основной контент */
+.main-content {
+  flex: 1;
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
-.auth-section h2 {
-  margin-bottom: 20px;
+/* Masonry Grid Layout */
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  grid-auto-rows: masonry;
+  align-items: start;
+}
+
+/* Fallback для браузеров без поддержки masonry */
+@supports not (grid-template-rows: masonry) {
+  .masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+}
+
+/* Базовые стили карточек */
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: cardFadeIn 0.6s ease-out forwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+.card:nth-child(6) { animation-delay: 0.6s; }
+.card:nth-child(7) { animation-delay: 0.7s; }
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.card-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Главная карточка */
+.card-hero {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 16px 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #e8d5ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.hero-features {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.feature-tag {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  color: white;
+  font-weight: 500;
+}
+
+/* Карточки функций */
+.card-feature {
+  color: white;
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 12px 0;
+}
+
+.card p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Высокая карточка */
+.card-tall {
+  grid-row: span 2;
+}
+
+/* Превью коллаборации */
+.collaboration-preview {
+  margin-top: 20px;
+}
+
+.avatar-group {
+  display: flex;
+  gap: -8px;
+  justify-content: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  margin-left: -8px;
+  font-size: 1.2rem;
+}
+
+.avatar-more {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(155, 89, 182, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  margin-left: -8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Карточка тарифов */
+.card-pricing {
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.3) 0%, rgba(142, 68, 173, 0.2) 100%);
+  text-align: center;
+}
+
+.pricing-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.price-tag {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.price {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.price-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Карточка социальных сетей */
+.card-social {
+  color: white;
+}
+
+.social-links-compact {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.social-link-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-width: 60px;
+}
+
+.social-link-compact:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.social-link-compact .social-icon {
   font-size: 1.5rem;
 }
 
-.telegram-auth {
-  margin-bottom: 20px;
+.social-link-compact span:last-child {
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
-.telegram-auth p {
-  margin-bottom: 15px;
-  opacity: 0.9;
-}
-
-.telegram-login-wrapper {
-  display: flex;
-  justify-content: center;
-  margin: 15px 0;
-}
-
-.alternative-auth {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  padding-top: 20px;
-}
-
-.phone-auth-button {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+/* Карточка статистики */
+.card-stats {
   color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: not-allowed;
-  opacity: 0.6;
-  font-size: 1rem;
+  text-align: center;
 }
 
-.features {
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.stat-item {
+  padding: 16px;
   background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
-  max-width: 500px;
-  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.features h3 {
-  margin-bottom: 15px;
-  font-size: 1.3rem;
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 4px;
 }
 
-.features ul {
-  list-style: none;
-  padding: 0;
-}
-
-.features li {
-  padding: 8px 0;
-  font-size: 1rem;
-  opacity: 0.9;
+.stat-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .error-message {
-  background: rgba(255, 0, 0, 0.2);
-  border: 1px solid rgba(255, 0, 0, 0.4);
-  color: #ffcccc;
-  padding: 10px;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #dc3545;
+  padding: 12px 16px;
   border-radius: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
+/* Загрузка */
 .loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
@@ -135,32 +415,86 @@
   100% { transform: rotate(360deg); }
 }
 
-.user-info {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 30px;
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Авторизованный пользователь */
+.user-welcome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-photo-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.welcome-text {
+  color: white;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.user-dashboard {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+.user-info-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
   border-radius: 15px;
-  backdrop-filter: blur(10px);
-  margin-bottom: 30px;
-  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  text-align: center;
   width: 100%;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .profile-photo {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  margin-bottom: 15px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  margin-bottom: 20px;
+  border: 3px solid #e9ecef;
 }
 
-.user-info h2 {
-  margin-bottom: 15px;
+.user-info-card h2 {
+  margin-bottom: 20px;
   font-size: 1.8rem;
+  color: #2c3e50;
 }
 
-.user-info p {
-  margin: 8px 0;
-  opacity: 0.9;
+.user-info-card p {
+  margin: 10px 0;
+  color: #6c757d;
+  font-size: 1rem;
 }
 
 .actions {
@@ -168,51 +502,155 @@
   gap: 15px;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
 
 .main-button {
-  background: #4CAF50;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
   color: white;
   padding: 15px 30px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1.1rem;
-  font-weight: bold;
-  transition: background 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.main-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
 }
 
 .main-button:hover {
-  background: #45a049;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+.main-button:hover::before {
+  left: 100%;
 }
 
 .logout-button {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 15px 30px;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #dc3545;
+  color: #dc3545;
+  padding: 13px 30px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1.1rem;
-  transition: background 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
 }
 
 .logout-button:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #dc3545;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .masonry-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .card-hero {
+    grid-column: span 1;
+  }
 }
 
 @media (max-width: 768px) {
-  .App-header {
+  .header-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .logo-section {
+    text-align: center;
+  }
+  
+  .logo {
+    font-size: 2rem;
+  }
+  
+  .auth-button-wrapper {
+    align-items: center;
+  }
+  
+  .main-content {
     padding: 20px 15px;
   }
   
-  .logo-section h1 {
-    font-size: 2.5rem;
+  .masonry-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   
-  .auth-section, .user-info, .features {
-    margin: 0 15px 20px;
+  .card {
     padding: 20px;
+  }
+  
+  .card-hero {
+    grid-column: span 1;
+    padding: 32px 20px;
+  }
+  
+  .hero-title {
+    font-size: 2.2rem;
+  }
+  
+  .hero-features {
+    justify-content: center;
+  }
+  
+  .feature-tag {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+  
+  .card-tall {
+    grid-row: span 1;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .social-links-compact {
+    gap: 8px;
+  }
+  
+  .social-link-compact {
+    min-width: 50px;
+    padding: 10px;
+  }
+  
+  .user-welcome {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .user-dashboard {
+    padding: 0 15px;
+  }
+  
+  .user-info-card {
+    padding: 30px 20px;
   }
   
   .actions {
@@ -222,6 +660,41 @@
   
   .main-button, .logout-button {
     width: 100%;
-    max-width: 250px;
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.8rem;
+  }
+  
+  .hero-title {
+    font-size: 1.8rem;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .card-hero {
+    padding: 24px 16px;
+  }
+  
+  .hero-features {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .feature-tag {
+    font-size: 0.75rem;
+  }
+  
+  .card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .card p {
+    font-size: 0.9rem;
   }
 }
