@@ -215,8 +215,8 @@ function App() {
 
       {/* Контентный блок */}
       <main className="main-content">
-        <div className="masonry-grid">
-          {/* Главная карточка */}
+        {/* Главная секция */}
+        <div className="hero-section">
           <div className="card card-hero">
             <div className="card-content">
               <h1 className="hero-title">Dialist</h1>
@@ -228,88 +228,106 @@ function App() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Карточка трекинга задач */}
-          <div className="card card-feature">
-            <div className="card-icon">📋</div>
-            <div className="card-content">
-              <h3>Трекинг задач</h3>
-              <p>Управляйте задачами, объединяйте их в проекты, устанавливайте приоритет и сроки.</p>
+        {/* Трехколоночный layout */}
+        <div className="three-column-layout">
+          {/* Левая колонка */}
+          <div className="column column-left">
+            {/* Карточка трекинга задач */}
+            <div className="card card-feature">
+              <div className="card-content">
+                <div className="card-header">
+                  <div className="card-icon">📋</div>
+                  <h3>Трекинг задач</h3>
+                </div>
+                <p>Управляйте задачами, объединяйте их в проекты, устанавливайте приоритет и сроки.</p>
+              </div>
             </div>
-          </div>
 
-          {/* Карточка совместного доступа */}
-          <div className="card card-feature card-tall">
-            <div className="card-icon">👥</div>
-            <div className="card-content">
-              <h3>Совместный доступ</h3>
-              <p>Вы можете пригласить в проекты до 5 человек, чтобы иметь общие списки дел</p>
-              <div className="collaboration-preview">
-                <div className="avatar-group">
-                  <div className="avatar">👤</div>
-                  <div className="avatar">👤</div>
-                  <div className="avatar">👤</div>
-                  <div className="avatar-more">+2</div>
+            {/* Карточка статистики */}
+            <div className="card card-stats">
+              <div className="card-content">
+                <h3>Уже используют</h3>
+               <div className="stats-grid">
+                   <div className="stat-item">
+                    <div className="stat-number">1000+</div>
+                    <div className="stat-label">пользователей</div>
+                  </div>
+                  <div className="stat-item">
+                    <div className="stat-number">5000+</div>
+                    <div className="stat-label">задач создано</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Карточка Telegram */}
-          <div className="card card-feature">
-            <div className="card-icon">📱</div>
-            <div className="card-content">
-              <h3>Интеграция с Telegram</h3>
-              <p>Доступен Telegram-бот с упрощенным интерфейсом для быстрого доступа к самому важному</p>
-            </div>
-          </div>
-
-          {/* Карточка тарифов */}
-          <div className="card card-pricing">
-            <div className="card-content">
-              <div className="pricing-icon">💰</div>
-              <h3>Гибкие тарифы</h3>
-              <p>Расширенный функционал по цене кружки кофе</p>
-              <div className="price-tag">
-                <span className="price">7 дней</span>
-                <span className="price-label">бесплатно</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Карточка социальных сетей */}
-          <div className="card card-social">
-            <div className="card-content">
-              <h3>Следите за разработкой</h3>
-              <div className="social-links-compact">
-                <a href="https://dzen.ru/dialist_ya" target="_blank" rel="noopener noreferrer" className="social-link-compact">
-                  <span className="social-icon">📰</span>
-                  <span>Дзен</span>
-                </a>
-                <a href="https://x.com/dialist_x" target="_blank" rel="noopener noreferrer" className="social-link-compact">
-                  <span className="social-icon">🐦</span>
-                  <span>X</span>
-                </a>
-                <a href="https://t.me/dialist_tg" target="_blank" rel="noopener noreferrer" className="social-link-compact">
-                  <span className="social-icon">📢</span>
-                  <span>Telegram</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Карточка статистики */}
-          <div className="card card-stats">
-            <div className="card-content">
-              <h3>Уже используют</h3>
-              <div className="stats-grid">
-                <div className="stat-item">
-                  <div className="stat-number">1000+</div>
-                  <div className="stat-label">пользователей</div>
+          {/* Центральная колонка */}
+          <div className="column column-center">
+            {/* Карточка совместного доступа */}
+            <div className="card card-feature card-tall">
+              <div className="card-content">
+                <div className="card-header">
+                  <div className="card-icon">👥</div>
+                  <h3>Совместный доступ</h3>
                 </div>
-                <div className="stat-item">
-                  <div className="stat-number">5000+</div>
-                  <div className="stat-label">задач создано</div>
+                <p>Вы можете пригласить в проекты до 5 человек, чтобы иметь общие списки дел</p>
+                <div className="collaboration-preview">
+                  <div className="avatar-group">
+                    <div className="avatar">👤</div>
+                    <div className="avatar">👤</div>
+                    <div className="avatar">👤</div>
+                    <div className="avatar-more">+2</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Карточка социальных сетей */}
+            <div className="card card-social">
+              <div className="card-content">
+                <h3>Следите за разработкой</h3>
+                <div className="social-links-compact">
+                  <a href="https://dzen.ru/dialist_ya" target="_blank" rel="noopener noreferrer" className="social-link-compact">
+                    <span className="social-icon">📰</span>
+                    <span>Дзен</span>
+                  </a>
+                  <a href="https://x.com/dialist_x" target="_blank" rel="noopener noreferrer" className="social-link-compact">
+                    <span className="social-icon">🐦</span>
+                    <span>X</span>
+                  </a>
+                  <a href="https://t.me/dialist_tg" target="_blank" rel="noopener noreferrer" className="social-link-compact">
+                    <span className="social-icon">📢</span>
+                    <span>Telegram</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Правая колонка */}
+          <div className="column column-right">
+            {/* Карточка Telegram */}
+            <div className="card card-feature">
+              <div className="card-content">
+                <div className="card-header">
+                  <div className="card-icon">📱</div>
+                  <h3>Интеграция с Telegram</h3>
+                </div>
+                <p>Доступен Telegram-бот с упрощенным интерфейсом для быстрого доступа к самому важному</p>
+              </div>
+            </div>
+
+            {/* Карточка тарифов */}
+            <div className="card card-pricing">
+              <div className="card-content">
+                <div className="pricing-icon">💰</div>
+                <h3>Гибкие тарифы</h3>
+                <p>Расширенный функционал по цене кружки кофе</p>
+                <div className="price-tag">
+                  <span className="price">7 дней</span>
+                  <span className="price-label">бесплатно</span>
                 </div>
               </div>
             </div>
